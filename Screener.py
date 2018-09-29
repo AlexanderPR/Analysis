@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sbn
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -63,8 +62,6 @@ def load_csv_data(stock, interval='1d', day_begin='2018-01-01', day_end='2018-09
 
         return website.text.split('\n')[:-1]
 
-stock = load_csv_data('EVO.St')
-stock[:10]
 
 def get_data(stock):
     df = pd.read_csv('/Users/alexandersson/Downloads/' + stock, parse_dates=['Date'], index_col=['Date'])
@@ -89,15 +86,17 @@ def plotter(df, MA50=False, MA200=False):
     plt.subplot(212)
     plt.plot(df['Volume'])
     plt.legend(['Volym'], loc=2)
+    plt.show()
 
 
-EVO = get_data('EVO.ST.csv')
-SKA = get_data('SKA-B.ST.csv')
-ENG = get_data('ENG.ST.csv')
+evo=load_csv_data('evo.st', day_begin='2018-01-01', day_end='2018-09-29')
+headers = evo[:1]
 
-plotter(EVO, MA50=True, MA200=True)
 
-evo=load_csv_data('evo.st', day_begin='2018-01-01', day_end='2018-09-11')
-evo_df = pd.DataFrame(s.split(',') for s in evo)
-evo_df.head()
+df = pd.DataFrame((s.split(',') for s in evo))
+df.columns = df.iloc[0]
+df = df.reset_index(drop=True)
+df = df.drop(0)
+print(df.tail())
 
+plotter(df)
